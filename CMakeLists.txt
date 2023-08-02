@@ -256,6 +256,8 @@ if(NOT SODIUM_MINIMAL)
     )
 endif()
 
+message(STATUS "Building sodium library as ${PROJECT_NAME}")
+
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
         C_STANDARD 99
@@ -263,8 +265,10 @@ set_target_properties(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
-        libsodium/src/libsodium/include
-    PRIVATE
+#        libsodium/src/libsodium/include
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libsodium/src/libsodium/include>
+        $<INSTALL_INTERFACE:libsodium/src/libsodium/include>
+        PRIVATE
         libsodium/src/libsodium/include/sodium
 )
 
@@ -297,3 +301,18 @@ if(NOT SODIUM_DISABLE_TESTS)
     enable_testing()
     add_subdirectory(test)
 endif()
+
+get_target_property(SODIUM_INCLUDE_DIRS sodium INTERFACE_INCLUDE_DIRECTORIES)
+message("Sodium include directories: ${SODIUM_INCLUDE_DIRS}")
+
+install(TARGETS sodium EXPORT sodium
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include
+)
+
+install(EXPORT sodium
+        FILE SodiumTargets.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Sodium
+)
