@@ -303,7 +303,6 @@ if(NOT SODIUM_DISABLE_TESTS)
 endif()
 
 get_target_property(SODIUM_INCLUDE_DIRS sodium INTERFACE_INCLUDE_DIRECTORIES)
-message("Sodium include directories: ${SODIUM_INCLUDE_DIRS}")
 
 install(TARGETS sodium EXPORT sodium
         LIBRARY DESTINATION lib
